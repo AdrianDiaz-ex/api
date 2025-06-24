@@ -14,7 +14,7 @@ def login():
 
     try:
         conn = mysql.connector.connect(
-            host='sql10.freesqldatabase.com',
+            host='sql5.freesqldatabase.com',
             user='sql5786672',
             password='aqaA1EVWzd',
             database='sql5786672',
@@ -71,7 +71,7 @@ def login():
 def boleta(alumno_id):
     try:
        conn = mysql.connector.connect(
-            host='sql10.freesqldatabase.com',
+            host='sql5.freesqldatabase.com',
             user='sql5786672',
             password='aqaA1EVWzd',
             database='sql5786672',
@@ -133,7 +133,7 @@ def boleta(alumno_id):
 def horarios_faltantes(alumno_id):
     try:
        conn = mysql.connector.connect(
-            host='sql10.freesqldatabase.com',
+            host='sql5.freesqldatabase.com',
             user='sql5786672',
             password='aqaA1EVWzd',
             database='sql5786672',
