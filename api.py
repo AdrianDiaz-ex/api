@@ -70,7 +70,7 @@ def login():
 @app.route('/boleta/<int:alumno_id>', methods=['GET'])
 def boleta(alumno_id):
     try:
-       conn = mysql.connector.connect(
+        conn = mysql.connector.connect(
             host='sql5.freesqldatabase.com',
             user='sql5786672',
             password='aqaA1EVWzd',
@@ -132,7 +132,7 @@ def boleta(alumno_id):
 @app.route('/horarios_faltantes/<int:alumno_id>', methods=['GET'])
 def horarios_faltantes(alumno_id):
     try:
-       conn = mysql.connector.connect(
+        conn = mysql.connector.connect(
             host='sql5.freesqldatabase.com',
             user='sql5786672',
             password='aqaA1EVWzd',
