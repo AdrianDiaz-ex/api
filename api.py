@@ -15,9 +15,9 @@ def login():
     try:
         conn = mysql.connector.connect(
             host='sql10.freesqldatabase.com',
-            user='sql10785215',
-            password='4iQhsttH76',
-            database='sql10785215',
+            user='sql5786672',
+            password='aqaA1EVWzd',
+            database='sql5786672',
             port=3306
         )
         cursor = conn.cursor(dictionary=True)
@@ -70,11 +70,11 @@ def login():
 @app.route('/boleta/<int:alumno_id>', methods=['GET'])
 def boleta(alumno_id):
     try:
-        conn = mysql.connector.connect(
+       conn = mysql.connector.connect(
             host='sql10.freesqldatabase.com',
-            user='sql10785215',
-            password='4iQhsttH76',
-            database='sql10785215',
+            user='sql5786672',
+            password='aqaA1EVWzd',
+            database='sql5786672',
             port=3306
         )
         cursor = conn.cursor(dictionary=True)
@@ -132,11 +132,11 @@ def boleta(alumno_id):
 @app.route('/horarios_faltantes/<int:alumno_id>', methods=['GET'])
 def horarios_faltantes(alumno_id):
     try:
-        conn = mysql.connector.connect(
+       conn = mysql.connector.connect(
             host='sql10.freesqldatabase.com',
-            user='sql10785215',
-            password='4iQhsttH76',
-            database='sql10785215',
+            user='sql5786672',
+            password='aqaA1EVWzd',
+            database='sql5786672',
             port=3306
         )
         cursor = conn.cursor(dictionary=True)
