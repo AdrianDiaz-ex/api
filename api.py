@@ -48,10 +48,10 @@ def login():
                 horarios_faltantes = cursor.fetchall()
                
                  for fila in horarios_faltantes:
-                  if 'hora_inicio' in fila and fila['hora_inicio'] is not None:
-                   fila['hora_inicio'] = fila['hora_inicio'].strftime('%H:%M:%S')
-                  if 'hora_fin' in fila and fila['hora_fin'] is not None:
-                   fila['hora_fin'] = fila['hora_fin'].strftime('%H:%M:%S')
+                    if 'hora_inicio' in fila and fila['hora_inicio'] is not None:
+                        fila['hora_inicio'] = fila['hora_inicio'].strftime('%H:%M:%S')
+                    if 'hora_fin' in fila and fila['hora_fin'] is not None:
+                        fila['hora_fin'] = fila['hora_fin'].strftime('%H:%M:%S')
 
                 return jsonify({
                     "status": "ok",
