@@ -207,7 +207,7 @@ def boleta(alumno_id):
 
         pdf = PDFBoleta()
         pdf.add_page()
-        pdf.alumno_info(alumno['nombre'], alumno['apellido'], ultimo_semestre, alumno['matricula'])
+        pdf.alumno_info(alumno['nombre'], alumno['apellido'], ultimo_semestre, str(alumno['matricula']))
         pdf.calificaciones_table(calificaciones)
 
         response = Response(pdf.output(dest='S').encode('latin-1'))
