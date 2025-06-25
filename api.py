@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, Response
 import mysql.connector
 from fpdf import FPDF  
 import os
-from datetime import timedelta
 
 app = Flask(__name__)
 
