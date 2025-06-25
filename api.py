@@ -48,7 +48,7 @@ def login():
                 """, (matricula, matricula))
                 horarios_faltantes = cursor.fetchall()
                
-                 for fila in horarios:
+                 for fila in horarios_faltantes:
                   if 'hora_inicio' in fila and fila['hora_inicio'] is not None:
                    fila['hora_inicio'] = fila['hora_inicio'].strftime('%H:%M:%S')
                   if 'hora_fin' in fila and fila['hora_fin'] is not None:
