@@ -7,44 +7,70 @@ from datetime import timedelta
 
 class PDFBoleta(FPDF):
     def header(self):
-        self.set_font('Arial', 'B', 18)
-        self.set_text_color(0, 51, 102)
-        self.cell(0, 10, 'Boleta de Calificaciones', border=0, ln=True, align='C')
+        # Logo y encabezado
+        self.image('logo_gem.png', 10, 8, 25)  # Cambia la ruta si es necesario
+        self.image('logo_test.png', 170, 8, 25)
+        
+        self.set_font('Arial', 'B', 10)
+        self.cell(0, 5, 'GOBIERNO DEL ESTADO DE MEXICO', ln=True, align='C')
+        self.cell(0, 5, 'TECNOLOGICO DE ESTUDIOS SUPERIORES DE TIANGUISTENCO', ln=True, align='C')
+        self.set_font('Arial', '', 10)
+        self.cell(0, 5, 'DEPARTAMENTO DE CONTROL ESCOLAR', ln=True, align='C')
+        
+        self.set_font('Arial', 'B', 12)
+        self.cell(0, 10, 'BOLETA DE CALIFICACIONES', ln=True, align='C')
         self.ln(5)
-        self.set_line_width(0.5)
-        self.line(10, 25, 200, 25)
-        self.ln(10)
+
+    def alumno_info(self, nombre, paterno, materno, carrera, periodo, matricula):
+        self.set_font('Arial', '', 10)
+        self.set_fill_color(255, 255, 255)
+        self.cell(40, 8, 'CARRERA', 1)
+        self.cell(80, 8, carrera.upper(), 1)
+        self.cell(30, 8, 'PERIODO', 1)
+        self.cell(40, 8, periodo, 1, ln=True)
+
+        self.cell(40, 8, 'NOMBRE', 1)
+        self.cell(80, 8, nombre.upper(), 1)
+        self.cell(30, 8, 'MATRICULA', 1)
+        self.cell(40, 8, matricula, 1, ln=True)
+
+        self.cell(40, 8, 'PATERNO', 1)
+        self.cell(80, 8, paterno.upper(), 1)
+        self.cell(30, 8, 'MATERNO', 1)
+        self.cell(40, 8, materno.upper(), 1, ln=True)
+        self.ln(5)
+
+    def calificaciones_table(self, materias):
+        self.set_font('Arial', 'B', 10)
+        self.set_fill_color(220, 220, 220)
+        self.cell(10, 8, 'No.', 1, 0, 'C', 1)
+        self.cell(60, 8, 'ASIGNATURA', 1, 0, 'C', 1)
+        self.cell(15, 8, 'CRED', 1, 0, 'C', 1)
+        self.cell(40, 8, 'CURSO', 1, 0, 'C', 1)
+        self.cell(25, 8, 'CALIF.', 1, 1, 'C', 1)
+
+        self.set_font('Arial', '', 10)
+        for i, materia in enumerate(materias, 1):
+            self.cell(10, 8, str(i), 1, 0, 'C')
+            self.cell(60, 8, materia['nombre'], 1)
+            self.cell(15, 8, str(materia['creditos']), 1, 0, 'C')
+            self.cell(40, 8, materia.get('curso', 'CURSO NORMAL'), 1, 0, 'C')
+            self.cell(25, 8, str(materia['calificacion']), 1, 1, 'C')
+
+        self.ln(5)
+
+    def resumen(self, total_materias, aprobadas, promedio):
+        self.set_font('Arial', 'B', 10)
+        self.cell(0, 8, f'{aprobadas} asignaturas aprobadas de un total de {total_materias} cursadas', ln=True)
+        self.cell(0, 8, f'promedio     {promedio:.2f}', ln=True)
 
     def footer(self):
-        self.set_y(-15)
-        self.set_font('Arial', 'I', 8)
-        self.set_text_color(128)
-        self.cell(0, 10, f'Página {self.page_no()}', align='C')
-
-    def alumno_info(self, nombre, apellido, semestre):
-        self.set_font('Arial', 'B', 14)
-        self.set_text_color(0, 0, 0)
-        self.cell(0, 10, f'Alumno: {nombre} {apellido}', ln=True)
-        self.cell(0, 10, f'Semestre: {semestre}', ln=True)
-        self.ln(5)
-
-    def calificaciones_table(self, calificaciones):
-        # Encabezado de tabla
-        self.set_fill_color(0, 51, 102)
-        self.set_text_color(255, 255, 255)
-        self.set_font('Arial', 'B', 12)
-        self.cell(140, 10, 'Materia', border=1, fill=True)
-        self.cell(40, 10, 'Calificación', border=1, ln=True, fill=True)
-
-        # Contenido de tabla
-        self.set_font('Arial', '', 12)
-        self.set_text_color(0, 0, 0)
-        fill = False
-        for cal in calificaciones:
-            self.set_fill_color(230, 230, 230) if fill else self.set_fill_color(255, 255, 255)
-            self.cell(140, 10, cal['materia'], border=1, fill=fill)
-            self.cell(40, 10, str(cal['calificacion']), border=1, ln=True, fill=fill)
-            fill = not fill
+        self.set_y(-30)
+        self.set_font('Arial', '', 10)
+        self.cell(0, 10, '______________________________________', 0, 0, 'L')
+        self.cell(0, 10, '______________________________________', 0, 1, 'R')
+        self.cell(0, 5, 'FIRMA DEL ALUMNO', 0, 0, 'L')
+        self.cell(0, 5, 'SELLO CONTROL ESCOLAR', 0, 1, 'R')
 
 app = Flask(__name__)
 
