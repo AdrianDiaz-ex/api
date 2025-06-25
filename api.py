@@ -44,7 +44,7 @@ def login():
                   INNER JOIN calificaciones c ON m.id = c.materia_id
                   LEFT JOIN horarios h ON m.id = h.materia_id
                   WHERE c.calificacion < 70 AND c.alumno_id = %s
-                """, (matricula, matricula))
+                """, (matricula, matricula,))
                 horarios_faltantes = cursor.fetchall()
                
                  for fila in horarios_faltantes:
