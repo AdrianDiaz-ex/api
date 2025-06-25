@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, Response
 import mysql.connector
 from fpdf import FPDF  
 import os
+from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -46,6 +47,12 @@ def login():
                   WHERE c.calificacion < 70 AND c.alumno_id = %s
                 """, (matricula, matricula))
                 horarios_faltantes = cursor.fetchall()
+               
+                 for fila in horarios:
+                  if 'hora_inicio' in fila and fila['hora_inicio'] is not None:
+                   fila['hora_inicio'] = fila['hora_inicio'].strftime('%H:%M:%S')
+                  if 'hora_fin' in fila and fila['hora_fin'] is not None:
+                   fila['hora_fin'] = fila['hora_fin'].strftime('%H:%M:%S')
 
                 return jsonify({
                     "status": "ok",
