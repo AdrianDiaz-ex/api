@@ -198,17 +198,33 @@ def boleta(alumno_id):
             return jsonify({"status": "error", "mensaje": "No hay calificaciones para este alumno"}), 404
 
         cursor.execute("""
-            SELECT m.nombre AS materia, c.calificacion
+            SELECT m.nombre AS nombre, m.creaditos AS creditos, 'CURSO NORMAL' AS curso, c.calificacion
             FROM calificaciones c
             INNER JOIN materias m ON c.materia_id = m.id
             WHERE c.alumno_id = %s AND m.semestre = %s
         """, (alumno_id, ultimo_semestre))
         calificaciones = cursor.fetchall()
 
+        total_materias = len(calificaciones)
+        aprobadas = sum(1 for c in calificaciones if c['calificacion'] >= 70)
+        promedio = sum(c['calificacion'] for c in calificaciones) / total_materias if total_materias > 0 else 0
+
         pdf = PDFBoleta()
         pdf.add_page()
-        pdf.alumno_info(alumno['nombre'], alumno['apellido'], ultimo_semestre, str(alumno['matricula']))
+
+        # Usamos el mismo apellido para paterno y materno si solo hay uno
+        apellido_paterno = alumno['apellido']
+        apellido_materno = ""  # valor por defecto
+
+        pdf.alumno_info(
+            nombre=alumno['nombre'],
+            paterno=apellido_paterno,
+            materno=apellido_materno,
+            matricula=str(alumno['matricula'])
+        )
+
         pdf.calificaciones_table(calificaciones)
+        pdf.resumen(total_materias, aprobadas, promedio)
 
         response = Response(pdf.output(dest='S').encode('latin-1'))
         response.headers['Content-Type'] = 'application/pdf'
@@ -217,6 +233,7 @@ def boleta(alumno_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == '__main__':
