@@ -31,13 +31,29 @@ def login():
                 datos_alumno = cursor.fetchall()
                 cursor.execute("SELECT c.calificacion, m.nombre, m.creaditos, m.semestre from calificaciones c inner join materias m on c.materia_id=m.id where c.alumno_id=%s", (matricula,))
                 calificaciones = cursor.fetchall()
+                cursor.execute("""
+                  SELECT m.nombre, m.creaditos, m.semestre, h.grupo, h.dia, h.hora_inicio, h.hora_fin
+                  FROM materias m
+                  LEFT JOIN horarios h ON m.id = h.materia_id
+                  WHERE m.id NOT IN (
+                  SELECT c.materia_id FROM calificaciones c WHERE c.alumno_id = %s
+                   )
+                 UNION
+                  SELECT m.nombre, m.creaditos, m.semestre, h.grupo, h.dia, h.hora_inicio, h.hora_fin
+                  FROM materias m
+                  INNER JOIN calificaciones c ON m.id = c.materia_id
+                  LEFT JOIN horarios h ON m.id = h.materia_id
+                  WHERE c.calificacion < 70 AND c.alumno_id = %s
+                """, (matricula, matricula))
+                horarios_faltantes = cursor.fetchall()
 
                 return jsonify({
                     "status": "ok",
                     "rol": "alumno",
                     "alumno": alumno,
                     "datos": datos_alumno,
-                    "calificaciones": calificaciones
+                    "calificaciones": calificaciones,
+                    "horarios_faltantes": horarios_faltantes
                 })
             else:
                 return jsonify({"status": "error", "mensaje": "Credenciales incorrectas"}), 401
@@ -129,55 +145,8 @@ def boleta(alumno_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/horarios_faltantes/<int:alumno_id>', methods=['GET'])
-def horarios_faltantes(alumno_id):
-    try:
-        conn = mysql.connector.connect(
-            host='sql5.freesqldatabase.com',
-            user='sql5786672',
-            password='aqaA1EVWzd',
-            database='sql5786672',
-            port=3306
-        )
-        cursor = conn.cursor(dictionary=True)
-
-        # 1️⃣ Obtener materias aprobadas
-        cursor.execute("""
-            SELECT materia_id 
-            FROM calificaciones 
-            WHERE alumno_id = %s AND calificacion >= 70
-        """, (alumno_id,))
-        materias_aprobadas = [row['materia_id'] for row in cursor.fetchall()]
-
-        # 2️⃣ Obtener materias que NO están aprobadas
-        format_strings = ','.join(['%s'] * len(materias_aprobadas)) if materias_aprobadas else 'NULL'
-        query = f"""
-            SELECT h.*, m.nombre AS materia_nombre, ma.nombre AS maestro_nombre 
-            FROM horarios h 
-            INNER JOIN materias m ON h.materia_id = m.id
-            INNER JOIN profesores ma ON h.maestro_id = ma.id
-            WHERE h.materia_id NOT IN ({format_strings}) 
-        """
-        params = tuple(materias_aprobadas) if materias_aprobadas else ()
-        cursor.execute(query, params)
-        horarios = cursor.fetchall()
-
-        # ✅ Convertir timedelta a string
-        from datetime import timedelta
-        for fila in horarios:
-            for clave, valor in fila.items():
-                if isinstance(valor, timedelta):
-                    fila[clave] = str(valor)
-
-        return jsonify({
-            "status": "ok",
-            "horarios_faltantes": horarios
-        })
-
-    except Exception as e:
-        return jsonify({"status": "error", "error": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
 
