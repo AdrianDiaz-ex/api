@@ -44,10 +44,10 @@ def login():
                   INNER JOIN calificaciones c ON m.id = c.materia_id
                   LEFT JOIN horarios h ON m.id = h.materia_id
                   WHERE c.calificacion < 70 AND c.alumno_id = %s
-                """, (matricula, matricula,))
+                """, (matricula, matricula))
                 horarios_faltantes = cursor.fetchall()
-               
-                 for fila in horarios_faltantes:
+                
+                for fila in horarios_faltantes:
                     if 'hora_inicio' in fila and fila['hora_inicio'] is not None:
                         fila['hora_inicio'] = fila['hora_inicio'].strftime('%H:%M:%S')
                     if 'hora_fin' in fila and fila['hora_fin'] is not None:
