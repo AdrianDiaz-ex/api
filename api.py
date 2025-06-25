@@ -21,13 +21,13 @@ class PDFBoleta(FPDF):
         self.cell(0, 10, 'BOLETA DE CALIFICACIONES', ln=True, align='C')
         self.ln(5)
 
-    def alumno_info(self, nombre, paterno, materno, carrera, periodo, matricula):
+    def alumno_info(self, nombre, paterno, materno, matricula):
         self.set_font('Arial', '', 10)
         self.set_fill_color(255, 255, 255)
         self.cell(40, 8, 'CARRERA', 1)
-        self.cell(80, 8, carrera.upper(), 1)
+        self.cell(80, 8, 'INGENIERIA EN SISTEMAS'.upper(), 1)
         self.cell(30, 8, 'PERIODO', 1)
-        self.cell(40, 8, periodo, 1, ln=True)
+        self.cell(40, 8, '2025-1', 1, ln=True)
 
         self.cell(40, 8, 'NOMBRE', 1)
         self.cell(80, 8, nombre.upper(), 1)
@@ -179,7 +179,7 @@ def boleta(alumno_id):
         )
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT nombre, apellido FROM alumnos WHERE id=%s", (alumno_id,))
+        cursor.execute("SELECT nombre, apellido, matricula FROM alumnos WHERE id=%s", (alumno_id,))
         alumno = cursor.fetchone()
 
         if not alumno:
@@ -207,7 +207,7 @@ def boleta(alumno_id):
 
         pdf = PDFBoleta()
         pdf.add_page()
-        pdf.alumno_info(alumno['nombre'], alumno['apellido'], ultimo_semestre)
+        pdf.alumno_info(alumno['nombre'], alumno['apellido'], ultimo_semestre, alumno['matricula'])
         pdf.calificaciones_table(calificaciones)
 
         response = Response(pdf.output(dest='S').encode('latin-1'))
