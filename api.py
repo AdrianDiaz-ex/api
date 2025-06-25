@@ -8,8 +8,8 @@ from datetime import timedelta
 class PDFBoleta(FPDF):
     def header(self):
         # Logo y encabezado
-        self.image('logo_gem.png', 10, 8, 25)  # Cambia la ruta si es necesario
-        self.image('logo_test.png', 170, 8, 25)
+        #self.image('logo_gem.png', 10, 8, 25)  # Cambia la ruta si es necesario
+        #self.image('logo_test.png', 170, 8, 25)
         
         self.set_font('Arial', 'B', 10)
         self.cell(0, 5, 'GOBIERNO DEL ESTADO DE MEXICO', ln=True, align='C')
